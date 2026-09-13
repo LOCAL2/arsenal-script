@@ -53,7 +53,11 @@ try {
     execSync('git add .');
     
     console.log('Committing changes...');
-    execSync('git commit -m "build: publish obfuscated release"');
+    try {
+        execSync('git commit -m "build: publish obfuscated release"');
+    } catch (commitErr) {
+        console.log('No new changes to commit, proceeding to push...');
+    }
     
     console.log('Pushing to GitHub...');
     execSync('git push -u origin main');
