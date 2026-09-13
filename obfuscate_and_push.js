@@ -10,10 +10,19 @@ if (!fs.existsSync(sourceFile)) {
 }
 
 // 1. Read clean source code
-const originalCode = fs.readFileSync(sourceFile, 'utf8');
+let originalCode = fs.readFileSync(sourceFile, 'utf8');
+
+// Strip UTF-8 BOM if present
+if (originalCode.charCodeAt(0) === 0xFEFF) {
+    originalCode = originalCode.slice(1);
+}
 
 // Convert code bytes directly to standard string.char(...) calls array for 100% stable execution
-const buffer = Buffer.from(originalCode, 'utf8');
+let buffer = Buffer.from(originalCode, 'utf8');
+if (buffer[0] === 0xEF && buffer[1] === 0xBB && buffer[2] === 0xBF) {
+    buffer = buffer.slice(3);
+}
+
 const byteList = [];
 for (let i = 0; i < buffer.length; i++) {
     byteList.push(buffer[i]);
